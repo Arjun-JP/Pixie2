@@ -58,9 +58,12 @@ dependencies:
   intl: ^0.19.0
   path_provider: ^2.1.4
   url_launcher: ^6.3.1
-  flutter_sound: ^9.16.3
+  # flutter_sound: ^9.17.0
   permission_handler: ^11.3.1
   shimmer: ^3.0.0
+  record: ^5.0.5
+  flutter_sound: ^9.17.0
+  mic_stream: ^0.7.1+2
   
   
 

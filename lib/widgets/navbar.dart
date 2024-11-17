@@ -101,20 +101,20 @@ class NavBar extends StatelessWidget {
           child: IconButton(
             onPressed: () {
               // Check if the user is a guest
-              final authState = context.read<AuthBloc>().state;
-              if (authState is AuthGuest && label == 'Create' ||
-                  label == 'Library') {
-                // If guest, navigate to the login page
-                context.read<AuthBloc>().add(AuthGuestLoginRequested());
-                context.push('/CreateAccount');
+              // final authState = context.read<AuthBloc>().state;
+              // if (authState is AuthGuest && label == 'Create' ||
+              //     label == 'Library') {
+              //   // If guest, navigate to the login page
+              //   context.read<AuthBloc>().add(AuthGuestLoginRequested());
+              //   context.push('/CreateAccount');
+              // } else {
+              context.read<NavBarBloc>().add(NavBarItemTapped(index));
+              if (index == 1) {
+                context.push(route);
               } else {
-                context.read<NavBarBloc>().add(NavBarItemTapped(index));
-                if (index == 1) {
-                  context.push(route);
-                } else {
-                  context.go(route);
-                }
+                context.go(route);
               }
+              // }
             },
             icon: SvgPicture.asset(
               isSelected ? iconSelected : iconUnselected,

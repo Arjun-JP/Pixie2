@@ -14,6 +14,7 @@ class AddCharacterState extends Equatable {
   final String genre;
   final String musicAndSpeed;
   final bool fav;
+  final bool dislike;
   final bool showfeedback;
 
   const AddCharacterState(
@@ -25,6 +26,7 @@ class AddCharacterState extends Equatable {
       required this.genre,
       required this.musicAndSpeed,
       required this.fav,
+      required this.dislike,
       required this.showfeedback,
       this.lessons,
       this.charactorname,
@@ -41,6 +43,7 @@ class AddCharacterState extends Equatable {
       int? selectedindexlesson,
       int? selectedindexcharactor,
       bool? fav,
+      bool? dislike,
       bool? showfeedback,
       String? genre,
       String? musicAndSpeed}) {
@@ -57,6 +60,7 @@ class AddCharacterState extends Equatable {
         genre: genre ?? this.genre,
         musicAndSpeed: musicAndSpeed ?? this.musicAndSpeed,
         fav: fav ?? this.fav,
+        dislike: dislike ?? this.dislike,
         showfeedback: showfeedback ?? this.showfeedback);
   }
 
@@ -73,6 +77,7 @@ class AddCharacterState extends Equatable {
         genre,
         musicAndSpeed,
         fav,
+        dislike,
         showfeedback
       ];
 }

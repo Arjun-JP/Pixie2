@@ -8,6 +8,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:pixieapp/blocs/StoryFeedback/story_feedback_bloc.dart';
 import 'package:pixieapp/blocs/StoryFeedback/story_feedback_state.dart';
+import 'package:pixieapp/blocs/Story_bloc/story_bloc.dart';
+import 'package:pixieapp/blocs/Story_bloc/story_state.dart';
 import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_bloc.dart';
 import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_event.dart';
 import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_state.dart';
@@ -41,6 +43,7 @@ class NavBar2 extends StatefulWidget {
 
 class _NavBar2State extends State<NavBar2> {
   final player = AudioPlayer();
+
   late AudioPlayer _audioPlayer;
   User? user = FirebaseAuth.instance.currentUser;
   bool _isPlaying = false;
@@ -94,12 +97,16 @@ class _NavBar2State extends State<NavBar2> {
     }
   }
 
- 
-
   String formatDuration(Duration d) {
     final minutes = d.inMinutes.remainder(60);
     final seconds = d.inSeconds.remainder(60);
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  void stopplaying() {
+    if (player.playing) {
+      player.pause();
+    }
   }
 
   void handlePlayPause({required AddCharacterState state}) async {
@@ -145,224 +152,223 @@ class _NavBar2State extends State<NavBar2> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(left: 2, right: 2),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-          image: DecorationImage(
-              image: AssetImage('assets/images/Rectangle 11723.png'),
-              fit: BoxFit.fill),
-        ),
-        child: Padding(
-          padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 25, bottom: 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text(
-                        formatDuration(position),
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                          color: AppColors.textColorblue,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        formatDuration(duration),
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                          color: AppColors.textColorblue,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Slider(
-                          min: 0,
-                          max: duration.inSeconds.toDouble(),
-                          value: position.inSeconds.toDouble(),
-                          onChanged: handleSeek,
-                          activeColor: AppColors.kpurple,
-                          inactiveColor: AppColors.kwhiteColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              BlocBuilder<AddCharacterBloc, AddCharacterState>(
-                builder: (context, state) => Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.max,
+    return BlocListener<StoryBloc, StoryState>(
+      listener: (context, state) async {
+        if (state is Stopplayingstate) {
+          stopplaying();
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(left: 2, right: 2),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          decoration: const BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+            image: DecorationImage(
+                image: AssetImage('assets/images/Rectangle 11723.png'),
+                fit: BoxFit.fill),
+          ),
+          child: Padding(
+            padding:
+                const EdgeInsets.only(left: 20, right: 20, top: 25, bottom: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: IconButton(
-                        onPressed: () {
-                          context
-                              .read<AddCharacterBloc>()
-                              .add(UpdatefavbuttonEvent(!state.fav));
-                          widget.suggestedStories
-                              ? updateFirebaseSuggested(
-                                  docRef: widget.documentReference!,
-                                  fav: !state.fav,
-                                )
-                              : updateFirebase(
-                                  docRef: widget.documentReference!,
-                                  fav: !state.fav,
-                                );
-                        },
-                        icon: SvgPicture.asset(
-                          state.fav == true
-                              ? 'assets/images/afterLike.svg'
-                              : 'assets/images/beforeLike.svg',
-                          width: 30,
-                          height: 30,
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text(
+                          formatDuration(position),
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            color: AppColors.textColorblue,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                        // icon: Icon(
-                        //   state.fav == true
-                        //       ? Icons.thumb_up
-                        //       : Icons.thumb_up_off_alt,
-                        //   size: 30,
-                        //   color: AppColors.kpurple,
-                        // ),
-                      ),
-                    ),
-                    BlocBuilder<StoryFeedbackBloc, StoryFeedbackState>(
-                      builder: (context, state) {
-                        bool isDisliked = false;
-                        if (state is DislikeStateUpdated) {
-                          isDisliked = state.isDisliked;
-                        }
-
-                        return IconButton(
-                          onPressed: () async {
-                            await showModalBottomSheet(
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              enableDrag: false,
-                              context: context,
-                              builder: (context) {
-                                return GestureDetector(
-                                  onTap: () => FocusScope.of(context).unfocus(),
-                                  child: Padding(
-                                    padding: MediaQuery.viewInsetsOf(context),
-                                    child: StoryFeedback(
-                                      story: widget.story,
-                                      title: widget.title,
-                                      path: widget.firebaseAudioPath,
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          icon: SvgPicture.asset(
-                            isDisliked
-                                ? 'assets/images/afterDislike.svg'
-                                : 'assets/images/beforeDislike.svg',
-                            width: 30,
-                            height: 30,
+                        Text(
+                          formatDuration(duration),
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            color: AppColors.textColorblue,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      onPressed: () {
-                        handlePlayPause(state: state);
-                      },
-                      icon: SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: player.playing
-                            ? const Icon(
-                                Icons.pause_circle_filled_sharp,
-                                color: AppColors.kpurple,
-                                size: 60,
-                              )
-                            : SvgPicture.asset(
-                                'assets/images/pausegrad.svg',
-                                fit: BoxFit.cover,
-                              ),
-                      ),
-                    ),
-                    widget.suggestedStories
-                        ? const SizedBox(
-                            width: 25,
-                            height: 25,
-                          )
-                        : IconButton(
-                            onPressed: () async {
-                              await showModalBottomSheet(
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                enableDrag: true,
-                                context: context,
-                                builder: (context) {
-                                  return GestureDetector(
-                                    onTap: () =>
-                                        FocusScope.of(context).unfocus(),
-                                    child: Padding(
-                                      padding: MediaQuery.viewInsetsOf(context),
-                                      child: const PlaylistBottomsheet(),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            icon: SvgPicture.asset(
-                              'assets/images/addToFavorites.svg',
-                              width: 25,
-                              height: 25,
-                            ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Slider(
+                            min: 0,
+                            max: duration.inSeconds.toDouble(),
+                            value: position.inSeconds.toDouble(),
+                            onChanged: handleSeek,
+                            activeColor: AppColors.kpurple,
+                            inactiveColor: AppColors.kwhiteColor,
                           ),
-                    IconButton(
-                      onPressed: () {
-                        FirebaseAuth.instance
-                            .signInAnonymously()
-                            .then((userCredential) {
-                          FirebaseStorage.instance
-                              .ref('path/to/audio/file.mp3')
-                              .getDownloadURL()
-                              .then((downloadUrl) {
-                            shareOnWhatsApp(
-                              appUrl:
-                                  "https://apps.apple.com/in/app/instagram/id389801252",
-                              audioFileUrl: downloadUrl,
-                            );
-                          }).catchError((error) {
-                            print("Failed to get download URL: $error");
-                          });
-                        }).catchError((error) {
-                          print("Anonymous sign-in failed: $error");
-                        });
-                      },
-                      icon: SvgPicture.asset(
-                        'assets/images/share.svg',
-                        width: 25,
-                        height: 25,
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
-            ],
+                BlocBuilder<AddCharacterBloc, AddCharacterState>(
+                  builder: (context, state) => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: IconButton(
+                          onPressed: () {
+                            context
+                                .read<AddCharacterBloc>()
+                                .add(UpdatefavbuttonEvent(!state.fav));
+                            widget.suggestedStories
+                                ? updateFirebaseSuggested(
+                                    docRef: widget.documentReference!,
+                                    fav: !state.fav,
+                                  )
+                                : updateFirebase(
+                                    docRef: widget.documentReference!,
+                                    fav: !state.fav,
+                                  );
+                          },
+                          icon: SvgPicture.asset(
+                            state.fav == true
+                                ? 'assets/images/afterLike.svg'
+                                : 'assets/images/beforeLike.svg',
+                            width: 30,
+                            height: 30,
+                          ),
+                          // icon: Icon(
+                          //   state.fav == true
+                          //       ? Icons.thumb_up
+                          //       : Icons.thumb_up_off_alt,
+                          //   size: 30,
+                          //   color: AppColors.kpurple,
+                          // ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          await showModalBottomSheet(
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            enableDrag: false,
+                            context: context,
+                            builder: (context) {
+                              return GestureDetector(
+                                onTap: () => FocusScope.of(context).unfocus(),
+                                child: Padding(
+                                  padding: MediaQuery.viewInsetsOf(context),
+                                  child: StoryFeedback(
+                                    story: widget.story,
+                                    title: widget.title,
+                                    path: widget.firebaseAudioPath,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        icon: SvgPicture.asset(
+                          state.dislike
+                              ? 'assets/images/afterDislike.svg'
+                              : 'assets/images/beforeDislike.svg',
+                          width: 30,
+                          height: 30,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          handlePlayPause(state: state);
+                        },
+                        icon: SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: player.playing
+                              ? const Icon(
+                                  Icons.pause_circle_filled_sharp,
+                                  color: AppColors.kpurple,
+                                  size: 60,
+                                )
+                              : SvgPicture.asset(
+                                  'assets/images/pausegrad.svg',
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                      ),
+                      widget.suggestedStories
+                          ? const SizedBox(
+                              width: 25,
+                              height: 25,
+                            )
+                          : IconButton(
+                              onPressed: () async {
+                                await showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  enableDrag: true,
+                                  context: context,
+                                  builder: (context) {
+                                    return GestureDetector(
+                                      onTap: () =>
+                                          FocusScope.of(context).unfocus(),
+                                      child: Padding(
+                                        padding:
+                                            MediaQuery.viewInsetsOf(context),
+                                        child: const PlaylistBottomsheet(),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              icon: SvgPicture.asset(
+                                'assets/images/addToFavorites.svg',
+                                width: 25,
+                                height: 25,
+                              ),
+                            ),
+                      IconButton(
+                        onPressed: () {
+                          FirebaseAuth.instance
+                              .signInAnonymously()
+                              .then((userCredential) {
+                            FirebaseStorage.instance
+                                .ref('path/to/audio/file.mp3')
+                                .getDownloadURL()
+                                .then((downloadUrl) {
+                              shareOnWhatsApp(
+                                appUrl:
+                                    "https://apps.apple.com/in/app/instagram/id389801252",
+                                audioFileUrl: downloadUrl,
+                              );
+                            }).catchError((error) {
+                              print("Failed to get download URL: $error");
+                            });
+                          }).catchError((error) {
+                            print("Anonymous sign-in failed: $error");
+                          });
+                        },
+                        icon: SvgPicture.asset(
+                          'assets/images/share.svg',
+                          width: 25,
+                          height: 25,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

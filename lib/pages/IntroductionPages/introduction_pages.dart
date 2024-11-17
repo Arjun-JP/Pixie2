@@ -114,9 +114,10 @@ class _IntroductionPageState extends State<IntroductionPage> {
       context: context,
       builder: (BuildContext builder) {
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: 300,
+              height: 200,
               child: CupertinoTheme(
                 data: const CupertinoThemeData(
                   textTheme: CupertinoTextThemeData(
@@ -129,7 +130,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 ),
                 child: CupertinoDatePicker(
                   maximumYear: DateTime.now().year,
-                  minimumYear: DateTime.now().year - 4,
+                  minimumYear: DateTime.now().year - 20,
                   initialDateTime: selectedDate ?? DateTime.now(),
                   maximumDate: DateTime.now(),
                   mode: CupertinoDatePickerMode.date,
@@ -144,19 +145,23 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                context.pop();
-              },
-              style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40),
-                  ),
-                  backgroundColor: AppColors.buttonblue),
-              child: Text('Add',
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(color: AppColors.textColorWhite)),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * .9,
+              child: ElevatedButton(
+                onPressed: () {
+                  context.pop();
+                },
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    backgroundColor: AppColors.buttonblue),
+                child: Text('Add',
+                    style: theme.textTheme.bodyMedium!
+                        .copyWith(color: AppColors.textColorWhite)),
+              ),
             ),
+            const SizedBox(height: 25)
           ],
         );
       },
@@ -453,8 +458,8 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                         GestureDetector(
                                           onTap: () => _showDatePicker(context),
                                           child: Container(
-                                            padding:
-                                                EdgeInsets.only(left: 10.0),
+                                            padding: const EdgeInsets.only(
+                                                left: 10.0),
                                             width: deviceWidth,
                                             height: 50,
                                             decoration: BoxDecoration(
@@ -467,7 +472,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                               child: selectedDate != null
                                                   ? Text(
                                                       "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                         fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.w400,
@@ -475,7 +480,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                                             .textColorblue,
                                                       ),
                                                     )
-                                                  : Text(
+                                                  : const Text(
                                                       "dd/mm/yyyy",
                                                       style: TextStyle(
                                                         fontSize: 16,
@@ -1160,7 +1165,12 @@ class _IntroductionPageState extends State<IntroductionPage> {
                         height: 60,
                         child: ElevatedButton(
                             onPressed: () async {
-                              if (currentpage_index == 1) {
+                              if ((currentpage_index == 1) &&
+                                      mother.text.trim().isNotEmpty ||
+                                  father.text.trim().isNotEmpty ||
+                                  GrandMother.text.trim().isNotEmpty ||
+                                  GrandFather.text.trim().isNotEmpty ||
+                                  pet.text.trim().isNotEmpty) {
                                 childdata.lovedonce.add(Lovedonces(
                                     relation: "Mother",
                                     name: mother.text.isNotEmpty
@@ -1229,44 +1239,58 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                   print("Error updating user data: $e");
                                 }
                               } else {
-                                if (currentpage_index == 0 &&
-                                    childdata.name.trim().isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      backgroundColor:
-                                          AppColors.snackBarBackground,
-                                      content: Text(
-                                        "Please enter Child name.",
-                                        style: theme.textTheme.bodyMedium
-                                            ?.copyWith(
-                                                color: AppColors.textColorblue,
-                                                fontWeight: FontWeight.w400),
-                                      ),
-                                      duration: Duration(seconds: 2),
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor:
+                                        AppColors.snackBarBackground,
+                                    content: Text(
+                                      "Answer atleast one",
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                              color: AppColors.textColorblue,
+                                              fontWeight: FontWeight.w400),
                                     ),
-                                  );
-                                } else if (currentpage_index == 0 &&
-                                    childdata.gender == Gender.notselected) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      backgroundColor:
-                                          AppColors.snackBarBackground,
-                                      content: Text(
-                                        "Please select gender",
-                                        style: theme.textTheme.bodyMedium
-                                            ?.copyWith(
-                                                color: AppColors.textColorblue,
-                                                fontWeight: FontWeight.w400),
-                                      ),
-                                      duration: Duration(seconds: 2),
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              }
+                              if (currentpage_index == 0 &&
+                                  childdata.name.trim().isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor:
+                                        AppColors.snackBarBackground,
+                                    content: Text(
+                                      "Please enter Child name.",
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                              color: AppColors.textColorblue,
+                                              fontWeight: FontWeight.w400),
                                     ),
-                                  );
-                                } else {
-                                  await pageViewController?.nextPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.ease,
-                                  );
-                                }
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              } else if (currentpage_index == 0 &&
+                                  childdata.gender == Gender.notselected) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor:
+                                        AppColors.snackBarBackground,
+                                    content: Text(
+                                      "Please select gender",
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                              color: AppColors.textColorblue,
+                                              fontWeight: FontWeight.w400),
+                                    ),
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              } else {
+                                await pageViewController?.nextPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.ease,
+                                );
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -1279,7 +1303,12 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                           !(childdata.gender ==
                                               Gender.notselected) &&
                                           (selectedDate != null)) ||
-                                      (currentpage_index == 1))
+                                      (currentpage_index == 1) &&
+                                          mother.text.trim().isNotEmpty ||
+                                      father.text.trim().isNotEmpty ||
+                                      GrandMother.text.trim().isNotEmpty ||
+                                      GrandFather.text.trim().isNotEmpty ||
+                                      pet.text.trim().isNotEmpty)
                                   ? AppColors.buttonblue
                                   : AppColors.buttonwhite,
                             ),

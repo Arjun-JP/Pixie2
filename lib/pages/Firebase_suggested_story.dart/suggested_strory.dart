@@ -5,7 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pixieapp/blocs/Story_bloc/story_bloc.dart';
+import 'package:pixieapp/blocs/Story_bloc/story_event.dart';
 import 'package:pixieapp/const/colors.dart';
 import 'package:pixieapp/repositories/story_repository.dart';
 import 'package:pixieapp/widgets/loading_widget.dart';
@@ -137,7 +140,7 @@ class _FirebasesuggestedstoryState extends State<Firebasesuggestedstory> {
             expandedHeight: deviceHeight * 0.20,
             leadingWidth: deviceWidth,
             collapsedHeight: deviceHeight * 0.08,
-             toolbarHeight: deviceHeight * 0.07,
+            toolbarHeight: deviceHeight * 0.07,
             pinned: true,
             floating: false,
             backgroundColor: const Color(0xff644a98).withOpacity(.99),
@@ -177,7 +180,10 @@ class _FirebasesuggestedstoryState extends State<Firebasesuggestedstory> {
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.close),
-                    onPressed: () => context.pop(),
+                    onPressed: () {
+                      context.read<StoryBloc>().add(StopplayingEvent());
+                      context.pop();
+                    },
                   ),
                 ),
               ),

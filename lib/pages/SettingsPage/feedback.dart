@@ -165,7 +165,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     return Card(
       child: Container(
         width: deviceWidth * 0.9,
-        height: deviceHeight * 0.36,
+        // height: deviceHeight * 0.6,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColors.kwhiteColor,

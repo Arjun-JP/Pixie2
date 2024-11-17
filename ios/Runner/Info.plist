@@ -65,29 +65,12 @@
 
     <!-- Permissions -->
     <key>NSMicrophoneUsageDescription</key>
-    <string>This app requires access to your microphone for recording audio.</string>
-    <key>NSMediaLibraryUsageDescription</key>
-    <string>This app needs access to your media library for audio playback.</string>
-    <key>NSCameraUsageDescription</key>
-    <string>We need access to your camera to scan QR codes and verify your identity during the sign-up process.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>We require access to your photo library to upload profile pictures and attachments.</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>We use your location to offer location-based services and verify your phone number.</string>
-
+    <string>This app needs access to the microphone to record audio for story narration.</string>
+    <key>NSAudioRecordingUsageDescription</key>
+    <string>Your app needs access to the microphone for recording audio.</string>
     <!-- Allow arbitrary loads for Firebase -->
     <key>NSAllowsArbitraryLoads</key>
     <true/>
-
-    <!-- Firebase API Key and Configuration -->
-    <key>FirebaseAPIKey</key>
-    <string>[YOUR-FIREBASE-API-KEY]</string>
-    <key>FirebaseAuthDomain</key>
-    <string>[YOUR-FIREBASE-AUTH-DOMAIN]</string>
-    <key>FirebaseDatabaseURL</key>
-    <string>[YOUR-DATABASE-URL]</string>
-    <key>FirebaseProjectID</key>
-    <string>[YOUR-PROJECT-ID]</string>
 
     <!-- Minimum macOS version requirement for Apple Silicon compatibility -->
     <key>LSMinimumSystemVersion</key>

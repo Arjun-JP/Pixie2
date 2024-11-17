@@ -6,6 +6,8 @@ import 'package:pixieapp/blocs/StoryFeedback/story_feedback_event.dart'
 import 'package:pixieapp/blocs/StoryFeedback/story_feedback_bloc.dart';
 import 'package:pixieapp/blocs/StoryFeedback/story_feedback_event.dart';
 import 'package:pixieapp/blocs/StoryFeedback/story_feedback_state.dart';
+import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_bloc.dart';
+import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_event.dart';
 import 'package:pixieapp/const/colors.dart';
 
 class StoryFeedback extends StatefulWidget {
@@ -25,6 +27,7 @@ class StoryFeedback extends StatefulWidget {
 }
 
 class _StoryFeedbackState extends State<StoryFeedback> {
+  bool disliked = false;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -212,6 +215,9 @@ class _StoryFeedbackState extends State<StoryFeedback> {
                                           isDisliked: true));
                                   context.pop();
                                 }
+                                context
+                                    .read<AddCharacterBloc>()
+                                    .add(const UpdatedislikebuttonEvent(true));
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content: Text(

@@ -106,4 +106,12 @@ class UpdatefavbuttonEvent extends AddCharacterEvent {
   List<Object?> get props => [fav];
 }
 
+class UpdatedislikebuttonEvent extends AddCharacterEvent {
+  final bool dislike;
+  const UpdatedislikebuttonEvent(this.dislike);
+
+  @override
+  List<Object?> get props => [dislike];
+}
+
 class ResetStateEvent extends AddCharacterEvent {}

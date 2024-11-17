@@ -53,7 +53,7 @@ class QuestionsIntroPage extends StatelessWidget {
                       child: Transform.rotate(
                         angle: .06,
                         child: Text(
-                            'Just 3 steps before we can create stories together',
+                            'Just 2 steps before we can create stories together',
                             textAlign: TextAlign.center,
                             style: theme.textTheme.bodyMedium!.copyWith(
                                 fontSize: 20,

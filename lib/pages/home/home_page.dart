@@ -384,15 +384,15 @@ class _HomePageState extends State<HomePage> {
             child: InkWell(
               onTap: () {
                 // Check if the user is a guest
-                final authState = context.read<AuthBloc>().state;
-                if (authState is AuthGuest) {
-                  // If guest, navigate to the login page
-                  context.read<AuthBloc>().add(AuthGuestLoginRequested());
-                  context.push('/CreateAccount');
-                } else {
-                  // If authenticated, navigate to AddCharacter page
-                  context.push('/AddCharacter');
-                }
+                // final authState = context.read<AuthBloc>().state;
+                // if (authState is AuthGuest) {
+                //   // If guest, navigate to the login page
+                //   context.read<AuthBloc>().add(AuthGuestLoginRequested());
+                //   context.push('/CreateAccount');
+                // } else {
+                // If authenticated, navigate to AddCharacter page
+                context.push('/AddCharacter');
+                // }
               },
               child: Container(
                 width: width * .7,
