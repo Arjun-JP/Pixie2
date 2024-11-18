@@ -132,11 +132,13 @@ final GoRouter router = GoRouter(
         final story = state.extra as Map<String, String>;
         final storytype = state.uri.queryParameters['storytype'];
         final language = state.uri.queryParameters['language'] ?? 'English';
+        final genre = state.uri.queryParameters['genre'] ?? "Funny";
 
         return StoryGeneratePage(
           story: story,
           storytype: storytype!,
           language: language,
+          genre: genre,
         );
       },
     ),

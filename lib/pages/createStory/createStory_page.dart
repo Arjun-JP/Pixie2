@@ -79,7 +79,7 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
                 listener: (context, state) {
                   if (state is StorySuccess) {
                     context.push(
-                      '/StoryGeneratePage?storytype=${builderstate.musicAndSpeed}&language=${builderstate.language.name}',
+                      '/StoryGeneratePage?storytype=${builderstate.musicAndSpeed}&language=${builderstate.language.name}&genre=${builderstate.genre}',
                       extra: state.story,
                     );
                   } else if (state is StoryFailure) {
@@ -485,8 +485,7 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
       {required VoidCallback ontap, required Color color}) {
     final devicewidth = MediaQuery.of(context).size.width;
     final theme = Theme.of(context);
-    return 
-    Container(
+    return Container(
       margin: EdgeInsets.only(bottom: devicewidth * 0.03),
       padding: EdgeInsets.symmetric(
           vertical: devicewidth * 0.07, horizontal: devicewidth * 0.05),

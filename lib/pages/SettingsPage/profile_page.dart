@@ -153,46 +153,72 @@ class _ProfilePageState extends State<ProfilePage>
     DateTime selectedDate = DateTime.now();
 
     showModalBottomSheet(
+      backgroundColor: AppColors.bottomSheetBackground,
       context: context,
       builder: (BuildContext context) {
         return Container(
-          height: 350,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
                 height: 200,
-                child: CupertinoDatePicker(
-                  maximumYear: DateTime.now().year,
-                  minimumYear: 2000,
-                  initialDateTime: selectedDate,
-                  mode: CupertinoDatePickerMode.date,
-                  onDateTimeChanged: (DateTime newDate) {
-                    setState(() {
-                      selectedDate = newDate;
-                    });
-                  },
+                child: CupertinoTheme(
+                  data: const CupertinoThemeData(
+                    textTheme: CupertinoTextThemeData(
+                      dateTimePickerTextStyle: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.textColorblue,
+                      ),
+                    ),
+                  ),
+                  child: CupertinoDatePicker(
+                    maximumYear: DateTime.now().year,
+                    minimumYear: 2000,
+                    initialDateTime: selectedDate,
+                    mode: CupertinoDatePickerMode.date,
+                    onDateTimeChanged: (DateTime newDate) {
+                      setState(() {
+                        selectedDate = newDate;
+                      });
+                    },
+                  ),
                 ),
               ),
               const SizedBox(
                 height: 20,
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  await FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(user?.uid)
-                      .update({
-                    'dob': selectedDate,
-                  });
+              SizedBox(
+                width: MediaQuery.of(context).size.width * .9,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user?.uid)
+                        .update({
+                      'dob': selectedDate,
+                    });
 
-                  setState(() {
-                    dateOfBirth = DateFormat('dd/MM/yyyy').format(selectedDate);
-                  });
+                    setState(() {
+                      dateOfBirth =
+                          DateFormat('dd/MM/yyyy').format(selectedDate);
+                    });
 
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Update'),
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      backgroundColor: AppColors.buttonblue),
+                  child: const Text(
+                    'Update',
+                    style: TextStyle(
+                        color: AppColors.textColorWhite, fontSize: 20),
+                  ),
+                ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         );

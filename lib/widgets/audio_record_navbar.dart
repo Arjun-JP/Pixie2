@@ -178,10 +178,11 @@ class _BottomNavRecordState extends State<BottomNavRecord> {
                             if (state is AudioStopped) {
                               final addcharacterState =
                                   context.read<AddCharacterBloc>().state;
+
                               print(addcharacterState.musicAndSpeed);
                               context.read<StoryBloc>().add(AddMusicEvent(
                                   event: addcharacterState.musicAndSpeed ??
-                                      "playtime",
+                                      "bedtime",
                                   audiofile: File(state.audioPath)));
                             }
                           },

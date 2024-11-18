@@ -1447,8 +1447,6 @@ PODS:
     - Flutter
   - share_plus (0.0.1):
     - Flutter
-  - sms_autofill (0.0.1):
-    - Flutter
   - url_launcher_ios (0.0.1):
     - Flutter
 
@@ -1475,7 +1473,6 @@ DEPENDENCIES:
   - pointer_interceptor_ios (from `.symlinks/plugins/pointer_interceptor_ios/ios`)
   - record_darwin (from `.symlinks/plugins/record_darwin/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
-  - sms_autofill (from `.symlinks/plugins/sms_autofill/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
@@ -1544,8 +1541,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/record_darwin/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
-  sms_autofill:
-    :path: ".symlinks/plugins/sms_autofill/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
@@ -1595,7 +1590,6 @@ SPEC CHECKSUMS:
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   record_darwin: 3b1a8e7d5c0cbf45ad6165b4d83a6ca643d929c3
   share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
-  sms_autofill: c461043483362c3f1709ee76eaae6eb570b31686
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
 
 PODFILE CHECKSUM: 0528a6b43e85f6b72f525f1fa2fdb2c8f6999836

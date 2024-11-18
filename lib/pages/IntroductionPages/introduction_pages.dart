@@ -1315,7 +1315,20 @@ class _IntroductionPageState extends State<IntroductionPage> {
                             child: (currentpage_index == 1)
                                 ? Text("Done",
                                     style: theme.textTheme.bodyLarge!.copyWith(
-                                        color: AppColors.textColorblue,
+                                        color: (currentpage_index == 1) &&
+                                                    mother.text
+                                                        .trim()
+                                                        .isNotEmpty ||
+                                                father.text.trim().isNotEmpty ||
+                                                GrandMother.text
+                                                    .trim()
+                                                    .isNotEmpty ||
+                                                GrandFather.text
+                                                    .trim()
+                                                    .isNotEmpty ||
+                                                pet.text.trim().isNotEmpty
+                                            ? AppColors.textColorWhite
+                                            : AppColors.textColorblue,
                                         fontSize: 20,
                                         fontWeight: FontWeight.w400))
                                 : Text("Continue",

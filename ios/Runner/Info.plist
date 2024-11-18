@@ -45,6 +45,11 @@
     <true/>
     <key>UIApplicationSupportsIndirectInputEvents</key>
     <true/>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>https</string>
+        <string>whatsapp</string>
+    </array>
 
     <!-- URL Scheme for Google Sign-In -->
     <key>CFBundleURLTypes</key>
@@ -68,6 +73,9 @@
     <string>This app needs access to the microphone to record audio for story narration.</string>
     <key>NSAudioRecordingUsageDescription</key>
     <string>Your app needs access to the microphone for recording audio.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>This app does not use the camera, but access is required due to external library dependencies.</string>
+
     <!-- Allow arbitrary loads for Firebase -->
     <key>NSAllowsArbitraryLoads</key>
     <true/>

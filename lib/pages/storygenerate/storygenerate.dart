@@ -25,13 +25,15 @@ class StoryGeneratePage extends StatefulWidget {
   final Map<String, String> story;
   final String storytype;
   final String language;
+  final String genre;
 
-  const StoryGeneratePage({
-    Key? key,
-    required this.story,
-    required this.storytype,
-    required this.language,
-  }) : super(key: key);
+  const StoryGeneratePage(
+      {Key? key,
+      required this.story,
+      required this.storytype,
+      required this.language,
+      required this.genre})
+      : super(key: key);
 
   @override
   _StoryGeneratePageState createState() => _StoryGeneratePageState();
@@ -58,10 +60,11 @@ class _StoryGeneratePageState extends State<StoryGeneratePage> {
     isStoryInitialized = true;
 
     final queryParams = GoRouterState.of(context).uri.queryParameters;
+    print('widget.story["genre"]');
     _documentReference = await _addStoryToFirebase(
       audiopath: '',
       fav: false,
-      genre: widget.story["genre"] ?? "Surprise me",
+      genre: queryParams['genre']! ?? "Surprise me",
       story: widget.story["story"] ?? "No data",
       title: widget.story["title"] ?? "No data",
       type: queryParams['storytype']!,

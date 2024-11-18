@@ -43,6 +43,12 @@ class NavBar2 extends StatefulWidget {
 
 class _NavBar2State extends State<NavBar2> {
   final player = AudioPlayer();
+  final GlobalKey _tooltipKey = GlobalKey();
+
+  void _showTooltip() {
+    final dynamic tooltip = _tooltipKey.currentState;
+    tooltip?.ensureTooltipVisible();
+  }
 
   late AudioPlayer _audioPlayer;
   User? user = FirebaseAuth.instance.currentUser;
@@ -306,57 +312,36 @@ class _NavBar2State extends State<NavBar2> {
                                 ),
                         ),
                       ),
-                      widget.suggestedStories
-                          ? const SizedBox(
-                              width: 25,
-                              height: 25,
-                            )
-                          : IconButton(
-                              onPressed: () async {
-                                await showModalBottomSheet(
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  enableDrag: true,
-                                  context: context,
-                                  builder: (context) {
-                                    return GestureDetector(
-                                      onTap: () =>
-                                          FocusScope.of(context).unfocus(),
-                                      child: Padding(
-                                        padding:
-                                            MediaQuery.viewInsetsOf(context),
-                                        child: const PlaylistBottomsheet(),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              icon: SvgPicture.asset(
-                                'assets/images/addToFavorites.svg',
-                                width: 25,
-                                height: 25,
-                              ),
-                            ),
                       IconButton(
                         onPressed: () {
-                          FirebaseAuth.instance
-                              .signInAnonymously()
-                              .then((userCredential) {
-                            FirebaseStorage.instance
-                                .ref('path/to/audio/file.mp3')
-                                .getDownloadURL()
-                                .then((downloadUrl) {
-                              shareOnWhatsApp(
-                                appUrl:
-                                    "https://apps.apple.com/in/app/instagram/id389801252",
-                                audioFileUrl: downloadUrl,
-                              );
-                            }).catchError((error) {
-                              print("Failed to get download URL: $error");
-                            });
-                          }).catchError((error) {
-                            print("Anonymous sign-in failed: $error");
+                          // Show the tooltip programmatically
+                          final dynamic tooltip = _tooltipKey.currentState;
+                          tooltip?.ensureTooltipVisible();
+
+                          // Simulate feature loading (Optional)
+                          Future.delayed(const Duration(seconds: 2), () {
+                            print("Feature loading completed");
                           });
+                        },
+                        icon: Tooltip(
+                          key: _tooltipKey, // Add the tooltip key
+                          message:
+                              'Stay tuned for the magic!', // Tooltip message
+                          waitDuration:
+                              const Duration(milliseconds: 0), // No wait
+                          showDuration:
+                              const Duration(seconds: 2), // Show for 2 seconds
+                          child: SvgPicture.asset(
+                            'assets/images/addToFavorites.svg',
+                            width: 25,
+                            height: 25,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          openWhatsAppChat(
+                              "${widget.title}\n${widget.story}\n\n Hey parent! Create personalized audio stories for your child! Introduce them to AI, inspiring them to think beyond. Pixie – their adventure buddy to reduce screentime \n\n For ios app:https://apps.apple.com/us/app/Pixie: Dream, Create, Inspire/6737147663 \n\n For Android app : https://play.google.com/store/apps/details?id=com.fabletronic.pixie");
                         },
                         icon: SvgPicture.asset(
                           'assets/images/share.svg',
@@ -412,17 +397,15 @@ class _NavBar2State extends State<NavBar2> {
       print('Story removed from fav');
     }
   }
-}
 
-void shareOnWhatsApp(
-    {required String audioFileUrl, required String appUrl}) async {
-  final whatsappUrl = Uri.parse(
-    "https://wa.me/?text=Hey!%20Listen%20to%20this%20amazing%20story%20on%20Pixie.%20Download%20the%20app%20for%20more%20similar%20stories:%20$appUrl%20\n\n"
-    "You%20can%20also%20listen%20to%20the%20audio%20directly:%20$audioFileUrl",
-  );
-  if (await canLaunchUrl(whatsappUrl)) {
-    await launchUrl(whatsappUrl);
-  } else {
-    print("Could not launch WhatsApp.");
+  Future<void> openWhatsAppChat(String text) async {
+    var url = "https://wa.me/?text=$text";
+    var uri = Uri.encodeFull(url);
+
+    if (await canLaunchUrl(Uri.parse(uri))) {
+      await launchUrl(Uri.parse(uri), mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch WhatsApp';
+    }
   }
 }
