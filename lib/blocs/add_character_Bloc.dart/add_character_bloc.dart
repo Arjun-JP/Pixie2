@@ -18,7 +18,8 @@ class AddCharacterBloc extends Bloc<AddCharacterEvent, AddCharacterState> {
             fav: false,
             dislike: false,
             showfeedback: true,
-            charactorname: null)) {
+            charactorname: null,
+            characterName: '')) {
     // Handle page change events
     on<PageChangeEvent>((event, emit) {
       emit(state.copyWith(currentPageIndex: event.currentPageIndex));
@@ -27,6 +28,10 @@ class AddCharacterBloc extends Bloc<AddCharacterEvent, AddCharacterState> {
     // Handle language change events
     on<LanguageChangeEvent>((event, emit) {
       emit(state.copyWith(language: event.language));
+    });
+    // Handle character name change events
+    on<UpdateCharactername>((event, emit) {
+      emit(state.copyWith(characterName: event.characterName));
     });
 
     // Handle resetting lovedOnce to null
@@ -95,7 +100,8 @@ class AddCharacterBloc extends Bloc<AddCharacterEvent, AddCharacterState> {
           musicAndSpeed: 'notselected',
           showfeedback: true,
           fav: false,
-          dislike: false));
+          dislike: false,
+          characterName: ''));
     });
   }
 }

@@ -9,6 +9,7 @@ import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_bloc.dart';
 import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_event.dart';
 import 'package:pixieapp/const/colors.dart';
 import 'package:pixieapp/main.dart';
+import 'package:pixieapp/widgets/analytics.dart';
 
 class LogoutBottomSheet extends StatefulWidget {
   const LogoutBottomSheet({super.key});
@@ -52,6 +53,8 @@ class _LogoutBottomSheetState extends State<LogoutBottomSheet> {
                   flex: 1,
                   child: ElevatedButton(
                     onPressed: () async {
+                      AnalyticsService.logEvent(
+                          eventName: 'logout_cancel_button');
                       context.pop();
                     },
                     style: ElevatedButton.styleFrom(
@@ -77,11 +80,12 @@ class _LogoutBottomSheetState extends State<LogoutBottomSheet> {
                   flex: 1,
                   child: ElevatedButton(
                     onPressed: () async {
+                      AnalyticsService.logEvent(eventName: 'logout_button');
+                      context.read<NavBarBloc>().add(const NavBarItemTapped(0));
                       context.read<AuthBloc>().add(AuthLogOutRequested());
                       context
                           .read<AddCharacterBloc>()
                           .add(const PageChangeEvent(0));
-                      context.read<NavBarBloc>().add(const NavBarItemTapped(0));
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(MediaQuery.of(context).size.width, 50),

@@ -70,6 +70,26 @@ class AboutPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
                         Text(
+                          'About Pixie',
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                              color: AppColors.textColorblack,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 15),
+                        const Text(
+                            'Pixie, a screen-free audio platform for kids \n\nAt Pixie, we understand how challenging it can be to reduce your child’s screen time when equally engaging, meaningful alternatives are hard to find. That’s why we’re on a mission to create audio solutions that can healthily engage your child and allow independent play.\n\nOur first offering, the Pixie Mobile App, empowers parents to craft personalized audio stories for their child, boosting the child’s creativity and encouraging active listening.'),
+                        const SizedBox(height: 15),
+                        Text(
+                          'About team',
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                              color: AppColors.textColorblack,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 15),
+                        const Text(
+                            'Pixie is the creation of a passionate team of parents and child development enthusiasts who share a common goal: to reduce screen time for kids and provide an alternative that supports their cognitive and emotional growth.\n\nTogether, our team is committed to reimagining storytelling for kids and helping families embrace a world beyond screens!'),
+                        const SizedBox(height: 20),
+                        Text(
                           'Privacy Policy',
                           style: theme.textTheme.bodyMedium!.copyWith(
                               color: AppColors.textColorblack,

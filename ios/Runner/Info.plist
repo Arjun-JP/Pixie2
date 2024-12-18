@@ -68,6 +68,13 @@
     <key>GoogleSignInReversedClientId</key>
     <string>com.googleusercontent.apps.245008050907-drcb7ukkf7lqkn66063l7n3p5pmaddat</string>
 
+    <!-- Additional configuration for apple Sign-In -->
+    <key>NSAppleMusicUsageDescription</key>
+    <string>We use this to identify your account and enable sign-in with Apple.</string>
+    <key>NSFaceIDUsageDescription</key>
+    <string>We use Face ID for secure Apple Sign-In.</string>
+    
+
     <!-- Permissions -->
     <key>NSMicrophoneUsageDescription</key>
     <string>This app needs access to the microphone to record audio for story narration.</string>
@@ -75,6 +82,11 @@
     <string>Your app needs access to the microphone for recording audio.</string>
     <key>NSCameraUsageDescription</key>
     <string>This app does not use the camera, but access is required due to external library dependencies.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We need your location to fetch the city name and create personalized stories just for you.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>We need your location to fetch the city name and create personalized stories just for you.</string>
+
 
     <!-- Allow arbitrary loads for Firebase -->
     <key>NSAllowsArbitraryLoads</key>

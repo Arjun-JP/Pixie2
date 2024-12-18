@@ -7,6 +7,7 @@ import 'package:pixieapp/blocs/Feedback/feedback_bloc.dart';
 import 'package:pixieapp/blocs/Feedback/feedback_event.dart';
 import 'package:pixieapp/blocs/Feedback/feedback_state.dart';
 import 'package:pixieapp/const/colors.dart';
+import 'package:pixieapp/widgets/analytics.dart';
 import 'package:pixieapp/widgets/widgets_index.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
@@ -30,6 +31,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
     //   context.read<FeedbackBloc>().add(CheckFeedbackEvent(user.uid));
     // }
     currentQuestionsLikedDisliked = _initialQuestions();
+    AnalyticsService.logScreenView(
+      screenName: '/feedbackPage',
+      screenClass: 'Feedback Screen',
+    );
   }
 
   @override

@@ -5,16 +5,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pixieapp/blocs/Navbar_Bloc/navbar_bloc.dart';
+import 'package:pixieapp/blocs/Navbar_Bloc/navbar_event.dart';
+import 'package:pixieapp/blocs/StoryFeedback/story_feedback_bloc.dart';
+import 'package:pixieapp/blocs/StoryFeedback/story_feedback_event.dart';
 import 'package:pixieapp/blocs/Story_bloc/story_bloc.dart';
 import 'package:pixieapp/blocs/Story_bloc/story_event.dart';
+import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_bloc.dart';
+import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_event.dart';
 
 import 'package:pixieapp/const/colors.dart';
 import 'package:pixieapp/repositories/story_repository.dart';
+import 'package:pixieapp/widgets/createdstorynavbar.dart';
 import 'package:pixieapp/widgets/loading_widget.dart';
 import 'package:pixieapp/widgets/navbar2.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class Firebasestory extends StatefulWidget {
   final DocumentReference<Object?> storyDocRef;
+
   const Firebasestory({super.key, required this.storyDocRef});
 
   @override
@@ -26,6 +35,12 @@ class _FirebasestoryState extends State<Firebasestory> {
   File? audioFile;
   String? audioUrl;
   StoryRepository storyRepository = StoryRepository();
+  @override
+  void initState() {
+    WakelockPlus.enable();
+    initialfeedback();
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -59,7 +74,7 @@ class _FirebasestoryState extends State<Firebasestory> {
     }
 
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -109,7 +124,9 @@ class _FirebasestoryState extends State<Firebasestory> {
                     icon: const Icon(Icons.close),
                     onPressed: () {
                       context.read<StoryBloc>().add(StopplayingEvent());
-                      context.pop();
+                      context.read<AddCharacterBloc>().add(ResetStateEvent());
+                      context.read<NavBarBloc>().add(const NavBarItemTapped(0));
+                      context.go('/HomePage');
                     },
                   ),
                 ),
@@ -141,12 +158,57 @@ class _FirebasestoryState extends State<Firebasestory> {
         ],
       ),
       bottomNavigationBar: NavBar2(
-          documentReference: widget.storyDocRef,
-          story: storyData?["story"] ?? 'No Story available',
-          title: storyData?["title"] ?? 'No title available',
-          firebaseAudioPath: storyData?["audiofile"] ?? 'No fileaudio found',
-          suggestedStories: false,
-          firebaseStories: true),
+        dislike: storyData?.containsKey("feedback_ref") == true &&
+                storyData?["isfav"] == false
+            ? true
+            : false,
+        liked: storyData?["isfav"] == true &&
+                storyData?.containsKey("feedback_ref") == false
+            ? true
+            : false,
+        documentReference: widget.storyDocRef,
+        story: storyData?["story"] ?? 'No Story available',
+        title: storyData?["title"] ?? 'No title available',
+        firebaseAudioPath: storyData?["audiofile"] ?? 'No fileaudio found',
+        // suggestedStories: false,
+        firebaseStories: true, suggestedStories: false,
+      ),
     );
+  }
+
+  void initialfeedback() {
+    if (storyData != null &&
+        storyData!.containsKey("feedback_ref") &&
+        storyData!["feedback_ref"] != null) {
+      final feedback = storyData!["feedback_ref"].get();
+      context.read<StoryFeedbackBloc>().add(UpdateInitialFeedbackEvent(
+          rating: feedback["rating"] ??
+              0, // Default value in case feedback["rating"] is null
+          issues:
+              feedback["issues"] ?? [], // Default empty list if issues is null
+          customIssue: feedback["customIssue"] ??
+              '', // Default empty string if customIssue is null
+          dislike: true,
+          liked: false));
+    } else if (storyData != null &&
+        storyData!.containsKey('isfav') &&
+        storyData!['isfav'] != null) {
+      final isFav = storyData!['isfav'];
+      if (isFav == true) {
+        context.read<StoryFeedbackBloc>().add(UpdateInitialFeedbackEvent(
+            rating: 0,
+            issues: [],
+            customIssue: '',
+            dislike: false,
+            liked: true));
+      } else {
+        context.read<StoryFeedbackBloc>().add(UpdateInitialFeedbackEvent(
+            rating: 0,
+            issues: [],
+            customIssue: '',
+            dislike: false,
+            liked: false));
+      }
+    }
   }
 }

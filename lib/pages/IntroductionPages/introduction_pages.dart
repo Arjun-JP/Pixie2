@@ -15,7 +15,7 @@ import 'package:pixieapp/models/Child_data_model.dart';
 import 'package:pixieapp/widgets/add_charactor_story.dart';
 import 'package:pixieapp/widgets/widgets_index.dart';
 import '../../blocs/introduction/introduction_bloc.dart';
-
+import 'package:pixieapp/widgets/analytics.dart';
 class IntroductionPage extends StatefulWidget {
   const IntroductionPage({super.key});
 
@@ -47,6 +47,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
   int _selectedPronounIndex = -1;
 
   final TextEditingController nameController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   final TextEditingController mother = TextEditingController();
   final TextEditingController father = TextEditingController();
@@ -90,6 +91,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
         suggestedCharactersList = suggestedlist;
       });
     });
+    _focusNode.unfocus();
     super.initState();
   }
 
@@ -108,6 +110,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
   }
 
   void _showDatePicker(BuildContext context) {
+    _focusNode.unfocus();
     final theme = Theme.of(context);
     showModalBottomSheet(
       backgroundColor: AppColors.bottomSheetBackground,
@@ -149,6 +152,9 @@ class _IntroductionPageState extends State<IntroductionPage> {
               width: MediaQuery.of(context).size.width * .9,
               child: ElevatedButton(
                 onPressed: () {
+                  setState(() {
+                    selectedDate = selectedDate ?? DateTime.now();
+                  });
                   context.pop();
                 },
                 style: ElevatedButton.styleFrom(
@@ -335,6 +341,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                                 BorderRadius.circular(12.0),
                                           ),
                                           child: TextField(
+                                            focusNode: _focusNode,
                                             textCapitalization:
                                                 TextCapitalization.sentences,
                                             style: theme.textTheme.bodyMedium,
@@ -403,6 +410,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                                 text: "He",
                                                 width: deviceWidth * 0.4305,
                                                 ontap: () {
+                                                  _focusNode.unfocus();
                                                   context
                                                       .read<IntroductionBloc>()
                                                       .add(GenderChanged(
@@ -418,6 +426,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                                 text: "She",
                                                 width: deviceWidth * 0.4305,
                                                 ontap: () {
+                                                  _focusNode.unfocus();
                                                   context
                                                       .read<IntroductionBloc>()
                                                       .add(GenderChanged(
@@ -434,6 +443,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                             text: "Prefer not to say",
                                             width: deviceWidth * 0.8888,
                                             ontap: () {
+                                              _focusNode.unfocus();
                                               context
                                                   .read<IntroductionBloc>()
                                                   .add(GenderChanged(
@@ -477,7 +487,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                                         fontWeight:
                                                             FontWeight.w400,
                                                         color: AppColors
-                                                            .textColorblue,
+                                                            .textColorblack,
                                                       ),
                                                     )
                                                   : const Text(
@@ -941,7 +951,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                             ),
                                             Relations(
                                               theme: theme,
-                                              relationName: 'Grand mother',
+                                              relationName: 'Grandmother',
                                               controller: GrandMother,
                                               onChanged: (GM) {
                                                 setState(() {
@@ -949,7 +959,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                                       Lovedonces(
                                                           name: GM,
                                                           relation:
-                                                              "Grand mother"));
+                                                              "Grandmother"));
                                                 });
                                               },
                                             ),
@@ -958,7 +968,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                             ),
                                             Relations(
                                               theme: theme,
-                                              relationName: 'Grand father',
+                                              relationName: 'Grandfather',
                                               controller: GrandFather,
                                               onChanged: (GF) {
                                                 setState(() {
@@ -966,7 +976,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                                       Lovedonces(
                                                           name: GF,
                                                           relation:
-                                                              "Grand father"));
+                                                              "Grandfather"));
                                                 });
                                               },
                                             ),
@@ -975,7 +985,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                             ),
                                             Relations(
                                               theme: theme,
-                                              relationName: 'Female friend',
+                                              relationName: 'Younger Sister',
                                               controller: pet,
                                               onChanged: (pett) {
                                                 setState(() {
@@ -983,7 +993,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                                       Lovedonces(
                                                           name: pett,
                                                           relation:
-                                                              "Female friend"));
+                                                              "Younger Sister"));
                                                 });
                                               },
                                             ),
@@ -1043,43 +1053,58 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                                             CrossAxisAlignment
                                                                 .center,
                                                         children: [
-                                                          Text(
-                                                            relationName,
-                                                            style: theme
-                                                                .textTheme
-                                                                .bodyMedium!
-                                                                .copyWith(
-                                                              color: AppColors
-                                                                  .textColorblack,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
+                                                          Expanded(
+                                                            flex: 2,
+                                                            child: Text(
+                                                              relationName,
+                                                              style: theme
+                                                                  .textTheme
+                                                                  .bodyMedium!
+                                                                  .copyWith(
+                                                                color: AppColors
+                                                                    .textColorblack,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                              ),
                                                             ),
                                                           ),
-                                                          Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          8),
-                                                              color: AppColors
-                                                                  .kwhiteColor,
-                                                            ),
-                                                            width: deviceWidth *
-                                                                0.5555,
-                                                            height: 48,
-                                                            child: Center(
-                                                              child: Text(
-                                                                name,
-                                                                style: theme
-                                                                    .textTheme
-                                                                    .bodyMedium!
-                                                                    .copyWith(
-                                                                        color: AppColors
-                                                                            .textColorblack,
-                                                                        fontWeight:
-                                                                            FontWeight.w400),
+                                                          Expanded(
+                                                            flex: 3,
+                                                            child: Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left: 10),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8),
+                                                                color: AppColors
+                                                                    .kwhiteColor,
+                                                              ),
+                                                              width:
+                                                                  deviceWidth *
+                                                                      0.5555,
+                                                              height: 48,
+                                                              child: Center(
+                                                                child: Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerLeft,
+                                                                  child: Text(
+                                                                    name,
+                                                                    style: theme
+                                                                        .textTheme
+                                                                        .bodyMedium!
+                                                                        .copyWith(
+                                                                            color:
+                                                                                AppColors.textColorblack,
+                                                                            fontWeight: FontWeight.w400),
+                                                                  ),
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -1165,95 +1190,8 @@ class _IntroductionPageState extends State<IntroductionPage> {
                         height: 60,
                         child: ElevatedButton(
                             onPressed: () async {
-                              if ((currentpage_index == 1) &&
-                                      mother.text.trim().isNotEmpty ||
-                                  father.text.trim().isNotEmpty ||
-                                  GrandMother.text.trim().isNotEmpty ||
-                                  GrandFather.text.trim().isNotEmpty ||
-                                  pet.text.trim().isNotEmpty) {
-                                childdata.lovedonce.add(Lovedonces(
-                                    relation: "Mother",
-                                    name: mother.text.isNotEmpty
-                                        ? mother.text
-                                        : ""));
-                                childdata.lovedonce.add(Lovedonces(
-                                    relation: "Father",
-                                    name: father.text.isNotEmpty
-                                        ? father.text
-                                        : ""));
-                                childdata.lovedonce.add(Lovedonces(
-                                    relation: "Grand mother",
-                                    name: GrandMother.text.isNotEmpty
-                                        ? GrandMother.text
-                                        : ""));
-                                childdata.lovedonce.add(Lovedonces(
-                                    relation: "Grand father",
-                                    name: GrandFather.text.isNotEmpty
-                                        ? GrandFather.text
-                                        : ""));
-                                childdata.lovedonce.add(Lovedonces(
-                                    relation: "Female friend",
-                                    name: pet.text.isNotEmpty ? pet.text : ""));
-                                List<Map<String, dynamic>> lovedOnceList =
-                                    childdata.lovedonce
-                                        .map((lovedonce) => lovedonce.toMap())
-                                        .toList();
-
-                                try {
-                                  // Get the currently authenticated user
-                                  User? user =
-                                      FirebaseAuth.instance.currentUser;
-
-                                  if (user != null) {
-                                    String userId = user.uid; // Get the user ID
-
-                                    await FirebaseFirestore.instance
-                                        .collection('users')
-                                        .doc(userId)
-                                        .update({
-                                      'email': user.email,
-                                      'phone': '',
-
-                                      'child_name': childdata.name,
-                                      'gender': childdata.gender == Gender.he
-                                          ? 'He'
-                                          : childdata.gender == Gender.she
-                                              ? 'She'
-                                              : 'Prefer not to say',
-                                      // 'fav_things': childdata.favthings,
-                                      'dob': childdata.dob,
-                                      'loved_once': lovedOnceList,
-
-                                      'displayName':
-                                          "displayName", // Update as needed
-                                      'photoURL':
-                                          "photoURL", // Update as needed
-                                      'newUser': false,
-                                    });
-                                    print("User data updated successfully");
-                                    context.push('/splashScreen');
-                                  } else {
-                                    print("No user is currently signed in.");
-                                  }
-                                } catch (e) {
-                                  print("Error updating user data: $e");
-                                }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    backgroundColor:
-                                        AppColors.snackBarBackground,
-                                    content: Text(
-                                      "Answer atleast one",
-                                      style: theme.textTheme.bodyMedium
-                                          ?.copyWith(
-                                              color: AppColors.textColorblue,
-                                              fontWeight: FontWeight.w400),
-                                    ),
-                                    duration: const Duration(seconds: 2),
-                                  ),
-                                );
-                              }
+                               AnalyticsService.logEvent(
+                                  eventName: 'introduction_done_button');
                               if (currentpage_index == 0 &&
                                   childdata.name.trim().isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -1286,6 +1224,114 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                     duration: const Duration(seconds: 2),
                                   ),
                                 );
+                              } else if (currentpage_index == 0 &&
+                                  selectedDate == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor:
+                                        AppColors.snackBarBackground,
+                                    content: Text(
+                                      "Please select date of birth",
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                              color: AppColors.textColorblue,
+                                              fontWeight: FontWeight.w400),
+                                    ),
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              } else if ((currentpage_index == 1) &&
+                                      mother.text.trim().isNotEmpty ||
+                                  father.text.trim().isNotEmpty ||
+                                  GrandMother.text.trim().isNotEmpty ||
+                                  GrandFather.text.trim().isNotEmpty ||
+                                  pet.text.trim().isNotEmpty) {
+                                childdata.lovedonce.add(Lovedonces(
+                                    relation: "Mother",
+                                    name: mother.text.isNotEmpty
+                                        ? mother.text
+                                        : ""));
+                                childdata.lovedonce.add(Lovedonces(
+                                    relation: "Father",
+                                    name: father.text.isNotEmpty
+                                        ? father.text
+                                        : ""));
+                                childdata.lovedonce.add(Lovedonces(
+                                    relation: "Grandmother",
+                                    name: GrandMother.text.isNotEmpty
+                                        ? GrandMother.text
+                                        : ""));
+                                childdata.lovedonce.add(Lovedonces(
+                                    relation: "Grandfather",
+                                    name: GrandFather.text.isNotEmpty
+                                        ? GrandFather.text
+                                        : ""));
+                                childdata.lovedonce.add(Lovedonces(
+                                    relation: "Younger Sister",
+                                    name: pet.text.isNotEmpty ? pet.text : ""));
+                                List<Map<String, dynamic>> lovedOnceList =
+                                    childdata.lovedonce
+                                        .map((lovedonce) => lovedonce.toMap())
+                                        .toList();
+
+                                try {
+                                  // Get the currently authenticated user
+                                  User? user =
+                                      FirebaseAuth.instance.currentUser;
+
+                                  if (user != null) {
+                                    String userId = user.uid; // Get the user ID
+
+                                    await FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(userId)
+                                        .update({
+                                      'email': user.email,
+                                      'phone': '',
+
+                                      'child_name': childdata.name,
+                                      'gender': childdata.gender == Gender.he
+                                          ? 'He'
+                                          : childdata.gender == Gender.she
+                                              ? 'She'
+                                              : 'Prefer not to say',
+                                      // 'fav_things': childdata.favthings,
+                                      'dob': childdata.dob,
+
+                                      'displayName':
+                                          "displayName", // Update as needed
+                                      'photoURL':
+                                          "photoURL", // Update as needed
+                                      'newUser': false,
+                                    });
+                                    await addToLovedonce(userId, lovedOnceList);
+                                    context.go('/splashScreen');
+                                  } else {
+                                    print("No user is currently signed in.");
+                                  }
+                                } catch (e) {
+                                  print("Error updating user data: $e");
+                                }
+                              } else if ((currentpage_index == 1) &&
+                                  mother.text.trim().isEmpty &&
+                                  father.text.trim().isEmpty &&
+                                  GrandMother.text.trim().isEmpty &&
+                                  GrandFather.text.trim().isEmpty &&
+                                  pet.text.trim().isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor:
+                                        AppColors.snackBarBackground,
+                                    content: Text(
+                                      "Answer atleast one",
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                              color: AppColors.textColorblue,
+                                              fontWeight: FontWeight.w400),
+                                    ),
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
                               } else {
                                 await pageViewController?.nextPage(
                                   duration: const Duration(milliseconds: 300),
@@ -1299,18 +1345,19 @@ class _IntroductionPageState extends State<IntroductionPage> {
                               ),
                               foregroundColor: Colors.white,
                               backgroundColor: ((currentpage_index == 0 &&
-                                          (childdata.name.trim().isNotEmpty) &&
-                                          !(childdata.gender ==
-                                              Gender.notselected) &&
-                                          (selectedDate != null)) ||
-                                      (currentpage_index == 1) &&
-                                          mother.text.trim().isNotEmpty ||
-                                      father.text.trim().isNotEmpty ||
-                                      GrandMother.text.trim().isNotEmpty ||
-                                      GrandFather.text.trim().isNotEmpty ||
-                                      pet.text.trim().isNotEmpty)
+                                      (childdata.name.trim().isNotEmpty) &&
+                                      !(childdata.gender ==
+                                          Gender.notselected) &&
+                                      (selectedDate != null)))
                                   ? AppColors.buttonblue
-                                  : AppColors.buttonwhite,
+                                  : (currentpage_index == 1 &&
+                                          (mother.text.isNotEmpty ||
+                                              father.text.isNotEmpty ||
+                                              GrandMother.text.isNotEmpty ||
+                                              GrandFather.text.isNotEmpty ||
+                                              pet.text.isNotEmpty))
+                                      ? AppColors.buttonblue
+                                      : AppColors.buttonwhite,
                             ),
                             child: (currentpage_index == 1)
                                 ? Text("Done",
@@ -1462,50 +1509,56 @@ class Relations extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          relationName,
-          style: theme.textTheme.bodyMedium!.copyWith(
-              color: AppColors.textColorblack,
-              fontWeight: FontWeight.w400,
-              fontSize: 16),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: AppColors.kwhiteColor,
-          ),
-          width: deviceWidth * 0.5555,
-          height: 48,
-          child: TextField(
-            textCapitalization: TextCapitalization.sentences,
-            style: theme.textTheme.bodyMedium,
-            controller: controller,
-            textAlign: TextAlign.left,
-            cursorColor: AppColors.textColorblue,
-            onChanged: (value) {},
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              errorBorder: InputBorder.none,
-              focusedErrorBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              // hintText: 'Type ${relationName.toLowerCase()}\'s name',
-              hintText: 'Type name here',
-
-              hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.textColorDimGrey,
+        Expanded(
+          flex: 2,
+          child: Text(
+            relationName,
+            style: theme.textTheme.bodyMedium!.copyWith(
+                color: AppColors.textColorblack,
                 fontWeight: FontWeight.w400,
-                fontSize: 14,
+                fontSize: 16),
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: AppColors.kwhiteColor,
+            ),
+            width: deviceWidth * 0.5555,
+            height: 48,
+            child: TextField(
+              textCapitalization: TextCapitalization.sentences,
+              style: theme.textTheme.bodyMedium,
+              controller: controller,
+              textAlign: TextAlign.left,
+              cursorColor: AppColors.textColorblue,
+              onChanged: (value) {},
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+                errorBorder: InputBorder.none,
+                focusedErrorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                // hintText: 'Type ${relationName.toLowerCase()}\'s name',
+                hintText: 'Type name here',
+
+                hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textColorDimGrey,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),
               ),
             ),
           ),
@@ -1555,5 +1608,40 @@ Future<List<String>> fetchSuggestedCharacters() async {
   } catch (e) {
     print('Error fetching suggested characters: $e');
     return [];
+  }
+}
+
+Future<void> addToLovedonce(String documentId, List<dynamic> newData) async {
+  try {
+    // Reference to your collection and document
+    var docRef = FirebaseFirestore.instance.collection('users').doc(documentId);
+
+    // Fetch the existing list from Firestore
+    var docSnapshot = await docRef.get();
+    if (docSnapshot.exists) {
+      var existingData = docSnapshot.data()?['loved_once'] ?? [];
+
+      // Check if any new item is already present in the list
+      List<dynamic> dataToAdd = [];
+      for (var newItem in newData) {
+        if (!existingData.contains(newItem)) {
+          dataToAdd.add(newItem); // Add only unique items
+        }
+      }
+
+      // If there's new data to add, update the Firestore document
+      if (dataToAdd.isNotEmpty) {
+        await docRef.update({
+          'loved_once': FieldValue.arrayUnion(dataToAdd),
+        });
+        print('Data added successfully!');
+      } else {
+        print('No new data to add.');
+      }
+    } else {
+      print('Document does not exist.');
+    }
+  } catch (e) {
+    print('Error adding data: $e');
   }
 }

@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pixieapp/blocs/StoryFeedback/story_feedback_bloc.dart';
+import 'package:pixieapp/blocs/StoryFeedback/story_feedback_event.dart';
 import 'package:pixieapp/blocs/Story_bloc/story_bloc.dart';
 import 'package:pixieapp/blocs/Story_bloc/story_event.dart';
 import 'package:pixieapp/blocs/Story_bloc/story_state.dart';
@@ -14,12 +17,15 @@ import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_event.dart'
 import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_state.dart';
 import 'package:pixieapp/const/colors.dart';
 import 'package:pixieapp/widgets/audio_record_navbar.dart';
+import 'package:pixieapp/widgets/createdstorynavbar.dart';
 import 'package:pixieapp/widgets/errorNavbar.dart';
 import 'package:pixieapp/widgets/progress_nav_bar.dart';
 import 'package:pixieapp/widgets/navbar_loading_audio.dart';
 import 'package:pixieapp/widgets/navbar2.dart';
 import 'package:pixieapp/widgets/record_listen_navbar.dart';
 import 'package:pixieapp/widgets/story_feedback.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:pixieapp/widgets/analytics.dart';
 
 class StoryGeneratePage extends StatefulWidget {
   final Map<String, String> story;
@@ -52,7 +58,14 @@ class _StoryGeneratePageState extends State<StoryGeneratePage> {
   @override
   void initState() {
     super.initState();
+    WakelockPlus.enable();
+    context.read<StoryFeedbackBloc>().add(UpdateInitialFeedbackEvent(
+        rating: 0, issues: [], customIssue: "", dislike: false, liked: false));
     WidgetsBinding.instance.addPostFrameCallback((_) => _initializeStory());
+    AnalyticsService.logScreenView(
+      screenName: '/StoryGeneratePage',
+      screenClass: 'Story Generation Screen',
+    );
   }
 
   Future<void> _initializeStory() async {
@@ -128,32 +141,6 @@ class _StoryGeneratePageState extends State<StoryGeneratePage> {
                           builder: (context, state) => IconButton(
                             icon: const Icon(Icons.close),
                             onPressed: () async {
-                              if (state.showfeedback) {
-                                await showModalBottomSheet(
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  enableDrag: false,
-                                  context: context,
-                                  builder: (context) {
-                                    return GestureDetector(
-                                      onTap: () =>
-                                          FocusScope.of(context).unfocus(),
-                                      child: Padding(
-                                        padding:
-                                            MediaQuery.viewInsetsOf(context),
-                                        child: StoryFeedback(
-                                          story: widget.story['story'] ??
-                                              'No Story available',
-                                          title: widget.story['title'] ??
-                                              'No title available',
-                                          path: audioUrl ?? '',
-                                          textfield: false,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              }
                               context.read<StoryBloc>().add(StopplayingEvent());
                               context.read<AddCharacterBloc>().add(
                                   const ShowfeedbackEvent(showfeedback: false));
@@ -207,13 +194,24 @@ class _StoryGeneratePageState extends State<StoryGeneratePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.story["story"] ?? "No data",
-                          style: theme.textTheme.bodyMedium!.copyWith(
-                            color: Colors.black,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w400,
-                          ),
+                        AnimatedTextKit(
+                          onFinished: () {},
+                          isRepeatingAnimation: false,
+                          pause: const Duration(milliseconds: 50),
+                          animatedTexts: [
+                            TyperAnimatedText(
+                              curve: Curves.decelerate,
+                              widget.story["story"] ?? "No data",
+                              textStyle: theme.textTheme.bodyMedium!.copyWith(
+                                  color: AppColors.textColorblack,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w400),
+                              speed: const Duration(milliseconds: 20),
+                            ),
+                          ],
+                          onTap: () {
+                            print("Tap Event");
+                          },
                         ),
                       ],
                     ),
@@ -223,19 +221,20 @@ class _StoryGeneratePageState extends State<StoryGeneratePage> {
             ),
             bottomNavigationBar: (state is StorySuccess)
                 ? RecordListenNavbar(
+                    event: widget.storytype,
+                    documentReference: _documentReference,
                     story: widget.story['story']!,
                     title: widget.story['title']!,
                     language: widget.language,
                   )
-                : (state is StoryAudioSuccess ||
-                        state is RecordedStoryAudioSuccess)
-                    ? NavBar2(
+                : ((state is StoryAudioSuccess ||
+                        state is RecordedStoryAudioSuccess))
+                    ? Createdstorynavbar(
                         documentReference: _documentReference,
                         audioFile: audioFile!,
                         story: widget.story['story'] ?? 'No Story available',
                         title: widget.story['title'] ?? 'No title available',
                         firebaseAudioPath: audioUrl ?? '',
-                        suggestedStories: false,
                         firebaseStories: false,
                       )
                     : (state is StartRecordaudioScreen ||
@@ -304,7 +303,8 @@ class _StoryGeneratePageState extends State<StoryGeneratePage> {
           .child('user_audio')
           .child('${DateTime.now().millisecondsSinceEpoch}.mp3');
 
-      final snapshot = await storageRef.putFile(audioFile);
+      final uploadTask = storageRef.putFile(audioFile);
+      final snapshot = await uploadTask;
       final audioUrl = await snapshot.ref.getDownloadURL();
 
       print('Audio uploaded: $audioUrl');

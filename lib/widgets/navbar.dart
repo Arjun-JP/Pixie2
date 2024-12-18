@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pixieapp/blocs/Auth_bloc/auth_bloc.dart';
-import 'package:pixieapp/blocs/Auth_bloc/auth_event.dart';
-import 'package:pixieapp/blocs/Auth_bloc/auth_state.dart';
 import 'package:pixieapp/blocs/Navbar_Bloc/navbar_bloc.dart';
 import 'package:pixieapp/blocs/Navbar_Bloc/navbar_event.dart';
 import 'package:pixieapp/blocs/Navbar_Bloc/navbar_state.dart';
+import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_bloc.dart';
+import 'package:pixieapp/blocs/add_character_Bloc.dart/add_character_event.dart';
 import 'package:pixieapp/const/colors.dart';
 import 'package:go_router/go_router.dart';
 
@@ -110,6 +109,7 @@ class NavBar extends StatelessWidget {
               // } else {
               context.read<NavBarBloc>().add(NavBarItemTapped(index));
               if (index == 1) {
+                context.read<AddCharacterBloc>().add(ResetStateEvent());
                 context.push(route);
               } else {
                 context.go(route);

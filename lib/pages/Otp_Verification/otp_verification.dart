@@ -23,10 +23,12 @@ class OtpVerification extends StatefulWidget {
 
 class _OtpVerificationState extends State<OtpVerification> {
   final TextEditingController _otpController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void dispose() {
     _otpController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -89,6 +91,13 @@ class _OtpVerificationState extends State<OtpVerification> {
 
                       // Updated TextField for OTP input
                       TextField(
+                        focusNode: _focusNode,
+                        onChanged: (value) {
+                          if (value.length == 6) {
+                            _focusNode.unfocus();
+                          }
+                        },
+                        cursorColor: AppColors.kpurple,
                         controller: _otpController,
                         decoration: const InputDecoration(
                           disabledBorder: OutlineInputBorder(
@@ -98,6 +107,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                           enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: AppColors.kpurple)),
                           labelText: 'Enter OTP',
+                          labelStyle: TextStyle(color: AppColors.kpurple),
                           border: OutlineInputBorder(),
                           hintText: '6-digit code',
                         ),
@@ -190,25 +200,25 @@ class _OtpVerificationState extends State<OtpVerification> {
                         ),
                       ),
 
-                      Padding(
-                        padding: const EdgeInsets.only(top: 3),
-                        child: Align(
-                          alignment: Alignment.bottomRight,
-                          child: TextButton(
-                            onPressed: () {
-                              // Logic to resend OTP can be implemented here
-                            },
-                            child: Text(
-                              "Resend code",
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                color: AppColors.textColorblue,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 3),
+                      //   child: Align(
+                      //     alignment: Alignment.bottomRight,
+                      //     child: TextButton(
+                      //       onPressed: () {
+                      //         // Logic to resend OTP can be implemented here
+                      //       },
+                      //       child: Text(
+                      //         "Resend code",
+                      //         style: theme.textTheme.bodyMedium!.copyWith(
+                      //           color: AppColors.textColorblue,
+                      //           fontSize: 17,
+                      //           fontWeight: FontWeight.w400,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // )
                     ],
                   ),
                 ),

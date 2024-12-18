@@ -1,9 +1,13 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:audio_session/audio_session.dart';
+
+import 'package:pixieapp/widgets/audio_controller.dart';
 import 'story_event.dart';
 import 'story_state.dart';
 import 'package:pixieapp/repositories/story_repository.dart';
@@ -13,7 +17,7 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
   final FlutterSoundPlayer _player = FlutterSoundPlayer();
   String? _audioPath;
-
+  final AudioController _audioController = AudioController();
   StoryBloc({required this.storyRepository}) : super(StoryInitial()) {
     _initializeAudioSession();
 
@@ -151,18 +155,19 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
     emit(StoryLoading());
     try {
       final storyResponse = await storyRepository.generateStory(
-        event: event.event,
-        age: event.age,
-        topic: event.topic,
-        child_name: event.childName,
-        gender: event.gender,
-        relation: event.relation,
-        relative_name: event.relativeName,
-        genre: event.genre,
-        lessons: event.lessons,
-        length: event.length,
-        language: event.language,
-      );
+          event: event.event,
+          age: int.parse(event.age),
+          topic: event.topic,
+          child_name: event.childName,
+          gender: event.gender,
+          relation: event.relation,
+          relative_name: event.relativeName,
+          genre: event.genre,
+          lessons: event.lessons,
+          length: event.length,
+          language: event.language,
+          character_name: event.characterName,
+          city: event.city);
 
       emit(StorySuccess(story: storyResponse));
     } catch (error) {
@@ -175,10 +180,10 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
       SpeechToTextEvent event, Emitter<StoryState> emit) async {
     emit(StoryLoading());
     try {
+      print(event.text);
       final audioFile = await storyRepository.speechToText(
-        text: event.text,
-        language: event.language,
-      );
+          text: event.text, language: event.language, event: event.event);
+
       emit(StoryAudioSuccess(audioFile: audioFile));
     } catch (error) {
       emit(StoryFailure(error: error.toString()));
@@ -223,6 +228,39 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
   }
 
   _stopplaying(Emitter<StoryState> emit) {
+    _audioController.stop();
     emit(const Stopplayingstate());
+  }
+}
+
+Future<void> _updateStoryWithAudioUrl(
+  DocumentReference<Object?>? storyref,
+  String audioUrl,
+) async {
+  if (storyref != null) {
+    try {
+      await storyref!.update({'audiofile': audioUrl});
+      print('Audio URL updated in Firestore');
+    } catch (e) {
+      print('Error updating audio URL: $e');
+    }
+  }
+}
+
+Future<String?> _uploadAudioToStorage(File audioFile) async {
+  try {
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child('user_audio')
+        .child('${DateTime.now().millisecondsSinceEpoch}.mp3');
+
+    final snapshot = await storageRef.putFile(audioFile);
+    final audioUrl = await snapshot.ref.getDownloadURL();
+
+    print('Audio uploaded: $audioUrl');
+    return audioUrl;
+  } catch (e) {
+    print('Error uploading audio: $e');
+    return null;
   }
 }
